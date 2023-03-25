@@ -1,0 +1,66 @@
+#keyboard-wrapper-iso {
+    container-type: inline-size;
+    width: 70%;
+    aspect-ratio: 3.1 / 1;
+    background-color: #333;
+    margin: 100px auto 0 auto;
+    text-transform: uppercase;
+    padding: 0.15vw;
+    border-radius: 0.5vw;
+}
+
+#keyboard {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    font-size: 3.5cqh;
+    grid-template-rows: repeat(5, 1fr);
+}
+
+.row {
+    display: grid;
+}
+
+.num-row {
+    grid-template-columns: 1fr repeat(12, 1fr) 2fr;
+}
+
+.top-row {
+    grid-template-columns: 1.5fr repeat(12, 1fr) 1.5fr;
+}
+
+.home-row {
+    grid-template-columns: 1.75fr repeat(12, 1fr) 1.25fr;
+}
+
+.bot-row {
+    grid-template-columns: 1.25fr repeat(11, 1fr) 2.75fr;
+}
+
+.space-row {
+    grid-template-columns: repeat(3, 1.25fr) 6.25fr repeat(4, 1.25fr);
+}
+
+.key {
+    border-radius: 0.4cqh;
+    background-color: #111;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0.175vw;
+}
+
+.key-left-align {
+    justify-content: left;
+    padding-left: 3cqh;
+}
+
+.return-top {
+    border-radius: 0.5vw 0.5vw 0 0.5vw;
+}
+
+.return-bot {
+    border-radius: 0 0 0.5vw 0.5vw;
+    margin-top: -0.2vw;
+}

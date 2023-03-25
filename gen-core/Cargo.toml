@@ -1,0 +1,25 @@
+[package]
+name = "gen-core"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+arrayvec = "0.7.2"
+bounded-integer = { version = "0.5.5", features = ["types", "std", "serde", "step_trait"] }
+file-chunker = "0.1.1"
+fxhash = "0.2.1"
+half = { version = "2.2.1", features = ["use-intrinsics", "serde"] }
+indexmap = { version = "1.9.2", features = ["serde", "std"] }
+itertools = "0.10.5"
+memmap2 = "0.5.10"
+num_cpus = "1.15.0"
+rayon = "1.6.1"
+serde = { version = "1.0.152", features = ["derive"] }
+serde_json = "1.0.93"
+serde_with = { version = "2.2.0", features = ["indexmap"] }
+sliding_window_alt = "0.1.2"
+smartstring = { git = "https://github.com/O-X-E-Y/smartstring", features = ["serde"] }
+thiserror = "1.0.38"
+
+[dev-dependencies]
+time_this = "0.2.2"
