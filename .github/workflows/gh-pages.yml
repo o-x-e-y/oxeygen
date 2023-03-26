@@ -19,7 +19,7 @@ jobs:
             override: true
             target: wasm32-unknown-unknown
       
-      - run: cargo instll --git https://github.com/DioxusLabs/cli
+      - run: cargo install --git https://github.com/DioxusLabs/cli
 
       - name: Build project
         shell: bash
