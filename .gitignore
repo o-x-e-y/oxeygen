@@ -1,2 +1,3 @@
 /target
 /corpora/*
+./gen-web/dist
