@@ -6,7 +6,9 @@ edition = "2021"
 [dependencies]
 dioxus = "0.3.2"
 dioxus-router = "0.3.0"
-dioxus-web = "0.3.1"
+dioxus-ssr = "0.3.0"
+dioxus-web = { version = "0.3.1", features = ["hydrate"] }
 gen-core = { path = "../gen-core" }
 gloo-net = { version = "0.2.6", default-features = false, features = ["json", "http"] }
 serde = { version = "1.0.152", features = ["derive"] }
+web-sys = { version = "0.3.61", default-features = false, features = ["Window"] }

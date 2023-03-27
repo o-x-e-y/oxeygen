@@ -6,13 +6,31 @@ mod keyboard_iso;
 mod keyboard_ortho;
 
 use dioxus::prelude::*;
-
 use dioxus_router::{Link, Redirect, Route, Router};
+use dioxus_web::Config;
 use serde::Deserialize;
+use web_sys::window;
 
 pub fn run() {
-    // launch the web app
-    dioxus_web::launch(App);
+    // // launch the web app
+    // dioxus_web::launch(App);
+
+    let mut dom = VirtualDom::new(App);
+    let _ = dom.rebuild();
+
+    let pre = dioxus_ssr::pre_render(&dom);
+
+    // set the inner content of main to the pre-rendered content
+    window()
+        .unwrap()
+        .document()
+        .unwrap()
+        .get_element_by_id("main")
+        .unwrap()
+        .set_inner_html(&pre);
+
+    // now rehydtrate
+    dioxus_web::launch_with_props(App, (), Config::new().hydrate(true));
 }
 
 #[derive(Deserialize)]
