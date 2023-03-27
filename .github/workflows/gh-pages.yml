@@ -32,37 +32,3 @@ jobs:
           build_dir: gen-web/dist
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-# name: Deploy to GitHub Pages
-# on:
-#   push:
-#     branches:
-#       - main
-
-# jobs:
-#   deploy:
-#     name: Deploy to GitHub Pages
-#     runs-on: ubuntu-latest
-#     steps:
-#     - uses: actions/checkout@v3
-#     - uses: actions-rs/toolchain@v1
-#       with:
-#         toolchain: nightly
-#         profile: minimal
-#         target: wasm32-unknown-unknown
-#         override: true
-#     - uses: Swatinem/rust-cache@v1
-#     - name: Install Dioxus-CLI
-#       shell: bash
-#       run: cargo install --git https://github.com/DioxusLabs/cli
-
-#     - name: Build Project 🎁
-#       shell: bash
-#       run: cd gen-web && dioxus build --release && cp ./dist/index.html ./dist/404.html
-
-#     - name: Deploy Project 🚀
-#       uses: JamesIves/github-pages-deploy-action@v4.2.3
-#       with:
-#         branch: gh-pages
-#         folder: gen-web/dist
-#         clean: false
