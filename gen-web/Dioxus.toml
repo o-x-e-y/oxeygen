@@ -17,6 +17,7 @@ asset_dir = "public"
 
 # HTML title tag content
 title = "Oxeygen"
+base_path = "oxeygen"
 
 [web.watcher]
 
