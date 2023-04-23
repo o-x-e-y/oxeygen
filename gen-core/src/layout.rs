@@ -13,7 +13,7 @@ pub struct Layout {
 }
 
 impl Layout {
-    pub fn new(keys: [Key; 30]) -> Self {
+    pub fn new(keys: [Key; KEY_AMOUNT]) -> Self {
         Self {
             matrix: keys.into(),
         }
