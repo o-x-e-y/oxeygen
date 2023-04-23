@@ -3,14 +3,14 @@ use thiserror::Error;
 
 use std::{collections::HashMap, path::Path};
 
-use gen_core::{corpus_refiner::CorpusRefiner, data::Data, layout::{KEY_AMOUNT, Layout, Key}};
+use gen_core::{corpus_refiner::CorpusRefiner, data::Data, layout::{KEY_AMOUNT, Layout}};
 
 #[derive(Default, Clone)]
 pub struct Corpus {
-    pub(crate) name: String,
-    pub(crate) char_to_index: HashMap<char, usize>,
-    pub(crate) chars: Vec<char>,
-    pub(crate) trigrams: Vec<f32>,
+    name: String,
+    char_to_index: HashMap<char, usize>,
+    chars: Vec<char>,
+    trigrams: Vec<f32>,
 }
 
 #[derive(Debug, Error)]
@@ -119,19 +119,19 @@ impl Corpus {
         }
     }
 
-    pub fn layout(&self, layout: [char; KEY_AMOUNT]) -> Option<Layout> {
-        let mut keys = [Key::MIN; KEY_AMOUNT];
+    // pub fn layout(&self, layout: [char; KEY_AMOUNT]) -> Option<Layout> {
+    //     let mut keys = [Key::MIN; KEY_AMOUNT];
         
-        for (i, u) in self.encode(layout).enumerate() {
-            if let Some(key) = u {
-                keys[i] = key;
-            } else {
-                return None
-            }
-        }
+    //     for (i, u) in self.encode(layout).enumerate() {
+    //         if let Some(key) = u {
+    //             keys[i] = key;
+    //         } else {
+    //             return None
+    //         }
+    //     }
 
-        Some(Layout::new(keys))
-    }
+    //     Some(Layout::new(keys))
+    // }
 }
 
 #[cfg(not(target_arch = "wasm32"))]
