@@ -26,97 +26,7 @@ impl Corpus {
     /// Returns the amount of different characters in the corpus. The amount of trigrams is always
     /// equal to `.len().pow(3)`.
     pub fn len(&self) -> usize {
-        self.char_to_index.len()
-    }
-
-    /// Encodes a char iterator with the corpus
-    pub fn encode<'a>(
-        &'a self,
-        chars: impl IntoIterator<Item = char> + 'a,
-    ) -> impl Iterator<Item = Option<usize>> + 'a {
-        chars
-            .into_iter()
-            .map(|c| {
-                self.char_to_index
-                    .get(&c)
-                    .copied()
-            })
-    }
-
-    pub fn encode_slice<'a>(
-        &'a self,
-        chars: impl IntoIterator<Item = &'a char> + 'a,
-    ) -> impl Iterator<Item = Option<usize>> + 'a {
-        chars
-            .into_iter()
-            .map(|c| {
-                self.char_to_index
-                    .get(c)
-                    .copied()
-            })
-    }
-
-    pub fn encode_trigram(&self, trigram: [char; 3]) -> Option<[usize; 3]> {
-        if let Some(u1) = self.char_to_index.get(&trigram[0]) {
-
-            if let Some(u2) = self.char_to_index.get(&trigram[1]) {
-
-                if let Some(u3) = self.char_to_index.get(&trigram[2]) {
-                    return Some([*u1, *u2, *u3]);
-                }
-            }
-        }
-
-        None
-    }
-
-    pub fn decode<'a>(
-        &'a self,
-        chars: impl IntoIterator<Item = usize> + 'a,
-    ) -> impl Iterator<Item = Option<char>> + 'a {
-        chars
-            .into_iter()
-            .map(|c| {
-                self.chars
-                .get(c)
-                .copied()
-            })
-    }
-
-    pub fn decode_slice<'a>(
-        &'a self,
-        chars: impl IntoIterator<Item = &'a usize> + 'a,
-    ) -> impl Iterator<Item = Option<char>> + 'a {
-        chars
-            .into_iter()
-            .copied()
-            .map(|c| {
-                self.chars
-                .get(c)
-                .copied()
-            })
-    }
-
-    pub fn decode_trigram(&self, trigram: [usize; 3]) -> Option<[char; 3]> {
-        if let Some(u1) = self.chars.get(trigram[0]) {
-
-            if let Some(u2) = self.chars.get(trigram[1]) {
-                
-                if let Some(u3) = self.chars.get(trigram[2]) {
-                    return Some([*u1, *u2, *u3]);
-                }
-            }
-        }
-
-        None
-    }
-
-    pub fn freq(&self, trigram: [char; 3]) -> Option<f32> {
-        if let Some(i) = self.encode_trigram(trigram) {
-            Some(self[i])
-        } else {
-            None
-        }
+        self.chars.len()
     }
 }
 
@@ -190,6 +100,88 @@ impl Corpus {
         let data: Data = self.into();
         data.save(path)?;
         Ok(())
+    }
+
+    pub fn layout_trigrams<'a>(&'a self, layout: &'a Layout) -> impl Iterator<Item = f32> + 'a {
+        layout.trigrams().map(|t| self[t])
+    }
+
+    pub fn encode<'a>(
+        &'a self,
+        chars: impl IntoIterator<Item = char> + 'a,
+    ) -> impl Iterator<Item = usize> + 'a {
+        chars
+            .into_iter()
+            .map(|c| {
+                self.char_to_index
+                    .get(&c)
+                    .expect("char not in corpus, crashing...")
+            })
+            .copied()
+    }
+
+    pub fn encode_slice<'a>(
+        &'a self,
+        chars: impl IntoIterator<Item = &'a char> + 'a,
+    ) -> impl Iterator<Item = usize> + 'a {
+        chars
+            .into_iter()
+            .map(|c| {
+                self.char_to_index
+                    .get(c)
+                    .expect("char not in corpus, crashing...")
+            })
+            .copied()
+    }
+
+    pub fn decode<'a>(
+        &'a self,
+        chars: impl IntoIterator<Item = usize> + 'a,
+    ) -> impl Iterator<Item = char> + 'a {
+        chars
+            .into_iter()
+            .map(|c| self.chars.get(c).expect("char not in corpus, crashing..."))
+            .copied()
+    }
+
+    pub fn decode_slice<'a>(
+        &'a self,
+        chars: impl IntoIterator<Item = &'a usize> + 'a,
+    ) -> impl Iterator<Item = char> + 'a {
+        chars
+            .into_iter()
+            .copied()
+            .map(|c| self.chars.get(c).expect("char not in corpus, crashing..."))
+            .copied()
+    }
+
+    pub fn get(&self, trigram: [char; 3]) -> f32 {
+        let t1 = self
+            .char_to_index
+            .get(&trigram[0])
+            .expect("first char unavailable in corpus.get");
+        let t2 = self
+            .char_to_index
+            .get(&trigram[1])
+            .expect("second char unavailable in corpus.get");
+        let t3 = self
+            .char_to_index
+            .get(&trigram[2])
+            .expect("third char unavailable in corpus.get");
+        let i = t1 * self.len().pow(2) + t2 * self.len() + t3;
+
+        self.trigrams[i]
+    }
+
+    pub fn layout_with(&self, keys: [char; 30]) -> Layout {
+        let keys = keys
+            .iter()
+            .map(|k| *self.char_to_index.get(k).unwrap())
+            .collect::<Vec<_>>()
+            .try_into()
+            .unwrap();
+
+        Layout::new(keys)
     }
 }
 
@@ -279,22 +271,6 @@ impl core::ops::Index<(usize, usize, usize)> for Corpus {
     }
 }
 
-impl core::ops::Index<[usize; 3]> for Corpus {
-    type Output = f32;
-
-    fn index(&self, index: [usize; 3]) -> &Self::Output {
-        assert!(index[0] < self.len() && index[1] < self.len() && index[2] < self.len());
-
-        let i1 = index[0] * self.len().pow(2);
-        let i2 = index[1] * self.len();
-        let i3 = index[2];
-
-        let index = i1 + i2 + i3;
-
-        &self.trigrams[index]
-    }
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -304,12 +280,9 @@ mod tests {
         let corpus = Corpus::load("../data/akl.json").expect("this should always exist");
 
         let start = "abc";
-        let encoded = corpus.encode(start.chars()).collect::<Option<Vec<_>>>()
-            .expect("could not encode {start}");
-
+        let encoded = corpus.encode(start.chars()).collect::<Vec<_>>();
         let decoded = corpus
             .decode(encoded.clone().into_iter())
-            .flatten()
             .collect::<String>();
 
         assert_eq!(start, decoded)
@@ -319,8 +292,7 @@ mod tests {
     fn get() {
         let corpus = Corpus::load("../data/akl.json").expect("this should always exist");
 
-        let the = corpus.freq(['t', 'h', 'e'])
-            .expect("trigram \"the\" not found in corpus");
+        let the = corpus.get(['t', 'h', 'e']);
 
         assert_eq!(
             corpus
@@ -330,10 +302,10 @@ mod tests {
             Some(&the)
         );
 
-        let our = corpus.freq(['o', 'u', 'r']).unwrap();
-        let dof = corpus.freq(['d', 'o', 'f']).unwrap();
-        let akl = corpus.freq(['a', 'k', 'l']).unwrap();
-        let zzz = corpus.freq(['z', 'z', 'z']).unwrap();
+        let our = corpus.get(['o', 'u', 'r']);
+        let dof = corpus.get(['d', 'o', 'f']);
+        let akl = corpus.get(['a', 'k', 'l']);
+        let zzz = corpus.get(['z', 'z', 'z']);
 
         assert!(our > dof);
         assert!(dof > akl);

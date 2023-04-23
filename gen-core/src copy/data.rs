@@ -304,7 +304,7 @@ mod test {
 
     #[test]
     fn load_test() {
-        // let folder = "/home/oxey/Repos/oxeylyzer/static/text/akl";
+        // let folder = "/home/oxey/Repos/oxeylyzer/static/text/bokmal";
         let folder =
             "/home/oxey/Repos/oxeylyzer/static/text/english/iweb-corpus-samples-cleaned.txt";
 

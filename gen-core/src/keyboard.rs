@@ -63,7 +63,7 @@ pub struct Fingerings {
     inner: [Finger; KEY_AMOUNT],
 }
 
-impl const Default for Fingerings {
+impl Default for Fingerings {
     #[rustfmt::skip]
     fn default() -> Self {
         Self { inner: [
@@ -102,16 +102,18 @@ pub struct PhysicalDistances {
     inner: [(f64, f64); KEY_AMOUNT],
 }
 
-impl PhysicalDistances {
+impl Default for PhysicalDistances {
     #[rustfmt::skip]
-    pub const fn new() -> Self {
+    fn default() -> Self {
         Self { inner: [
             (0.0, 0.0),  (1.0, 0.0),  (2.0, 0.0),  (3.0, 0.0),  (4.0, 0.0),  (5.0, 0.0),  (6.0, 0.0),  (7.0, 0.0),  (8.0, 0.0),  (9.0, 0.0),
             (0.25, 1.0), (1.25, 1.0), (2.25, 1.0), (3.25, 1.0), (4.25, 1.0), (5.25, 1.0), (6.25, 1.0), (7.25, 1.0), (8.25, 1.0), (9.25, 1.0),
             (0.5, 2.0),  (1.5, 2.0),  (2.5, 2.0),  (3.5, 2.0),  (4.5, 2.0),  (5.5, 2.0),  (6.5, 2.0),  (7.5, 2.0),  (8.5, 2.0),  (9.0, 0.0),
         ]}
     }
+}
 
+impl PhysicalDistances {
     pub const fn custom(distances: [(f64, f64); KEY_AMOUNT]) -> Self {
         Self { inner: distances }
     }
@@ -177,109 +179,5 @@ impl Keyboard {
 
     pub fn get_fingerings<const N: usize>(&self, positions: [Pos; N]) -> [Finger; N] {
         self.fingerings.get_fingerings(positions)
-    }
-}
-
-#[derive(Debug, Copy, Clone)]
-pub struct Ansi;
-
-#[derive(Debug, Copy, Clone)]
-pub struct Iso;
-
-#[derive(Debug, Copy, Clone)]
-pub struct AnsiAngle;
-
-#[derive(Debug, Copy, Clone)]
-pub struct IsoAngle;
-
-#[derive(Debug, Copy, Clone)]
-pub struct Ortho;
-
-#[const_trait]
-pub trait KeyboardType {
-    const KEY_SIZE: f64 = DEFAULT_KEY_SIZE;
-
-    fn distances() -> PhysicalDistances;
-
-    fn fingerings() -> Fingerings;
-
-    fn keyboard() -> Keyboard {
-        Keyboard {
-            distances: Self::distances(),
-            fingerings: Self::fingerings(),
-            key_size: Self::KEY_SIZE,
-        }
-    }
-}
-
-impl const KeyboardType for Ansi {
-    #[rustfmt::skip]
-    fn distances() -> PhysicalDistances {
-        PhysicalDistances { inner: [
-            (0.0, 0.0),  (1.0, 0.0),  (2.0, 0.0),  (3.0, 0.0),  (4.0, 0.0),  (5.0, 0.0),  (6.0, 0.0),  (7.0, 0.0),  (8.0, 0.0),  (9.0, 0.0),
-            (0.25, 1.0), (1.25, 1.0), (2.25, 1.0), (3.25, 1.0), (4.25, 1.0), (5.25, 1.0), (6.25, 1.0), (7.25, 1.0), (8.25, 1.0), (9.25, 1.0),
-            (0.5, 2.0),  (1.5, 2.0),  (2.5, 2.0),  (3.5, 2.0),  (4.5, 2.0),  (5.5, 2.0),  (6.5, 2.0),  (7.5, 2.0),  (8.5, 2.0),  (9.0, 0.0),
-        ]}
-    }
-
-    fn fingerings() -> Fingerings {
-        Fingerings::default()
-    }
-}
-
-impl KeyboardType for Iso {
-    fn distances() -> PhysicalDistances {
-        Ansi::distances()
-    }
-
-    fn fingerings() -> Fingerings {
-        Fingerings::default()
-    }
-}
-
-impl KeyboardType for AnsiAngle {
-    fn distances() -> PhysicalDistances {
-        Ansi::distances()
-    }
-
-    #[rustfmt::skip]
-    fn fingerings() -> Fingerings {
-        Fingerings { inner: [
-            LP, LR, LM, LI, LI,  RI, RI, RM, RR, RP,
-            LP, LR, LM, LI, LI,  RI, RI, RM, RR, RP,
-            LR, LM, LI, LI, LI,  RI, RI, RM, RR, RP,
-        ]}
-    }
-}
-
-impl const KeyboardType for IsoAngle {
-    #[rustfmt::skip]
-    fn distances() -> PhysicalDistances {
-        PhysicalDistances { inner: [
-            (0.0, 0.0),  (1.0, 0.0),  (2.0, 0.0),  (3.0, 0.0),  (4.0, 0.0),  (5.0, 0.0),  (6.0, 0.0),  (7.0, 0.0),  (8.0, 0.0),  (9.0, 0.0),
-            (0.25, 1.0), (1.25, 1.0), (2.25, 1.0), (3.25, 1.0), (4.25, 1.0), (5.25, 1.0), (6.25, 1.0), (7.25, 1.0), (8.25, 1.0), (9.25, 1.0),
-            (-0.5, 2.0), (0.5, 2.0),  (1.5, 2.0),  (2.5, 2.0),  (3.5, 2.0),  (5.5, 2.0),  (6.5, 2.0),  (7.5, 2.0),  (8.5, 2.0),  (9.0, 0.0),
-        ]}
-    }
-
-    fn fingerings() -> Fingerings {
-        Ansi::fingerings()
-    }
-}
-
-impl const KeyboardType for Ortho {
-    const KEY_SIZE: f64 = 18.5; // MBK keycap size + 1mm
-
-    #[rustfmt::skip]
-    fn distances() -> PhysicalDistances {
-        PhysicalDistances { inner: [
-            (0.0, 0.0), (1.0, 0.0), (2.0, 0.0), (3.0, 0.0), (4.0, 0.0),  (5.0, 0.0), (6.0, 0.0), (7.0, 0.0), (8.0, 0.0), (9.0, 0.0),
-            (0.0, 1.0), (1.0, 1.0), (2.0, 1.0), (3.0, 1.0), (4.0, 1.0),  (5.0, 1.0), (6.0, 1.0), (7.0, 1.0), (8.0, 1.0), (9.0, 1.0),
-            (0.0, 2.0), (1.0, 2.0), (2.0, 2.0), (3.0, 2.0), (4.0, 2.0),  (5.0, 2.0), (6.0, 2.0), (7.0, 2.0), (8.0, 2.0), (9.0, 0.0),
-        ]}
-    }
-
-    fn fingerings() -> Fingerings {
-        Ansi::fingerings()
     }
 }

@@ -14,7 +14,7 @@ edition = "2021"
 members = [
     "gen-core",
     "gen-cli",
-    "gen-web",
+    "gen-web"
 ]
 
 [dependencies]

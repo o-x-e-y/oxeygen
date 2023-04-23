@@ -12,9 +12,6 @@ use serde::Deserialize;
 use web_sys::window;
 
 pub fn run() {
-    // // launch the web app
-    // dioxus_web::launch(App);
-
     let mut dom = VirtualDom::new(App);
     let _ = dom.rebuild();
 
@@ -114,7 +111,7 @@ fn Data(cx: Scope) -> Element {
         Some(Ok(response)) => rsx! {
             button {
                 onclick: move |_| future.restart(),
-                "Click to fetch another doggo"
+                "Click to run future again"
             }
             p { "message: {response.message}" }
             p { "status: {response.status}" }

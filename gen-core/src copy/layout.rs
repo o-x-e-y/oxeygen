@@ -1,4 +1,5 @@
 use arrayvec::ArrayVec;
+use itertools::Itertools;
 
 pub type Key = usize;
 
@@ -21,5 +22,18 @@ impl Layout {
 
     pub fn keys(&self) -> &[usize] {
         &self.matrix
+    }
+
+    pub fn trigrams(&self) -> impl Iterator<Item = (usize, usize, usize)> + '_ {
+        self.matrix
+            .iter()
+            .combinations_with_replacement(3)
+            .map(|v| unsafe {
+                (
+                    **v.get_unchecked(0),
+                    **v.get_unchecked(1),
+                    **v.get_unchecked(2),
+                )
+            })
     }
 }

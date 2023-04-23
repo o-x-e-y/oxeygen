@@ -22,17 +22,17 @@ pub trait TrigramType: std::fmt::Debug {
     fn display(&self) -> &'static str;
 }
 
-impl Default for &dyn TrigramType {
+impl const Default for &dyn TrigramType {
     fn default() -> Self {
         &Unspecified
     }
 }
 
-impl Hash for &dyn TrigramType
+impl const Hash for &dyn TrigramType
 where
-    dyn TrigramType: TrigramType,
+    dyn TrigramType: ~const TrigramType,
 {
-    fn hash<H: Hasher>(&self, state: &mut H) {
+    fn hash<H: ~const Hasher>(&self, state: &mut H) {
         self.display().hash(state)
     }
 }

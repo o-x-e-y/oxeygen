@@ -1,4 +1,4 @@
-use crate::{keyboard::*, keyboard_types::*, trigram_types::*};
+use crate::{keyboard::*, keyboard_types::*, trigram_types::*, trigrams::*};
 
 pub struct Weights<'a> {
     inner: [f32; 27000], // { KEY_AMOUNT.pow(3) }
@@ -18,6 +18,11 @@ impl<'a> Weights<'a> {
         let user_weights = WeightsConfig::default();
 
         let types = TrigramTypes::default();
+
+        TrigramClassifications::new(keyboard, types)
+            .into_iter()
+            .take(100)
+            .for_each(|e| println!("{:<9} = {:?}", e.trigram_type, e.fingerings));
 
         Self::unit()
     }
@@ -67,7 +72,7 @@ pub struct WeightsConfig {
     physical_layout: Keyboard,
 }
 
-impl Default for WeightsConfig {
+impl const Default for WeightsConfig {
     fn default() -> Self {
         Self {
             sfb: -5.0,
