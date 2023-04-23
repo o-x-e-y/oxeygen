@@ -3,7 +3,7 @@ use thiserror::Error;
 
 use std::{collections::HashMap, path::Path};
 
-use crate::{corpus_refiner::CorpusRefiner, data::Data, layout::Layout};
+use crate::{corpus_refiner::CorpusRefiner, data::Data};
 
 #[derive(Default, Clone)]
 pub struct Corpus {

@@ -13,13 +13,13 @@ pub struct Layout {
 }
 
 impl Layout {
-    pub fn new(keys: [usize; 30]) -> Self {
+    pub fn new(keys: [Key; 30]) -> Self {
         Self {
             matrix: keys.into(),
         }
     }
 
-    pub fn keys(&self) -> &[usize] {
+    pub fn keys(&self) -> &[Key] {
         &self.matrix
     }
 }

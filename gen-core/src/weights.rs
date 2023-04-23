@@ -14,15 +14,16 @@ impl<'a> Weights<'a> {
         }
     }
 
-    pub fn new(keyboard: Keyboard) -> Self {
-        let user_weights = WeightsConfig::default();
+    pub fn new(_keyboard: Keyboard) -> Self {
+        // let user_weights = WeightsConfig::default();
 
-        let types = TrigramTypes::default();
+        // let types = TrigramTypes::default();
 
         Self::unit()
     }
 }
 
+#[allow(unused)]
 #[derive(Default)]
 pub struct TrigramWeight<'a> {
     weight: f64,
@@ -36,12 +37,14 @@ impl<'a> TrigramWeight<'a> {
     }
 }
 
+#[allow(unused)]
 pub struct SplaygramWeight {
     horizontal: f64,
     vertical: f64,
     threshold: f64,
 }
 
+#[allow(unused)]
 pub struct FingerWeight {
     pinky: f64,
     ring: f64,
@@ -50,6 +53,7 @@ pub struct FingerWeight {
     weight: f64,
 }
 
+#[allow(unused)]
 pub struct WeightsConfig {
     sfb: f64,
     sfs: f64,
