@@ -1,10 +1,9 @@
 use indexmap::IndexMap;
-use itertools::Itertools;
 use serde::{Deserialize, Serialize};
 use serde_with::{serde_as, serde_conv};
 use thiserror::Error;
 
-use crate::{corpus::Corpus, corpus_refiner::CorpusRefinerIterator, REPLACEMENT_CHAR};
+use crate::{corpus_refiner::CorpusRefinerIterator, REPLACEMENT_CHAR};
 
 #[cfg(not(target_arch = "wasm32"))]
 mod exclude_wasm {
@@ -43,11 +42,11 @@ serde_conv!(
     }
 );
 
-pub type FxIndexMap<K, V> = IndexMap<K, V, fxhash::FxBuildHasher>;
+type FxIndexMap<K, V> = IndexMap<K, V, fxhash::FxBuildHasher>;
 
 #[serde_as]
 #[derive(Debug, PartialEq, Default, Serialize, Deserialize)]
-pub(crate) struct Data {
+pub struct Data {
     pub(crate) name: String,
     #[serde_as(as = "FxIndexMap<TrigramAsStr, _>")]
     pub(crate) trigrams: FxIndexMap<[char; 3], f32>,
@@ -144,9 +143,26 @@ impl std::ops::Add for Data {
     }
 }
 
-#[cfg(not(target_arch = "wasm32"))]
 impl Data {
-    fn sorted(mut self) -> Self {
+    pub fn new(trigrams: FxIndexMap<[char; 3], f32>, name: &str) -> Self {
+        Self {
+            trigrams, name: name.into()
+        }
+    }
+
+    pub fn name(&self) -> &str {
+        &self.name
+    }
+
+    pub fn inner(&self) -> &FxIndexMap<[char; 3], f32> {
+        &self.trigrams
+    }
+
+    pub fn into_inner(self) -> FxIndexMap<[char; 3], f32> {
+        self.trigrams
+    }
+
+    pub fn sorted(mut self) -> Self {
         self.trigrams.sort_by(|t1, f1, t2, f2| {
             let ord = f2
                 .partial_cmp(f1)
@@ -167,15 +183,18 @@ impl Data {
 
         self
     }
+}
 
-    pub(crate) fn load<P: AsRef<Path>>(path: P) -> Result<Self, DataError> {
+#[cfg(not(target_arch = "wasm32"))]
+impl Data {
+    pub fn load<P: AsRef<Path>>(path: P) -> Result<Self, DataError> {
         let f = File::open(path)?;
         let mmap = unsafe { Mmap::map(&f)? };
         let data = serde_json::from_slice(&mmap)?;
         Ok(data)
     }
 
-    pub(crate) fn from_path<P: AsRef<Path>>(
+    pub fn from_path<P: AsRef<Path>>(
         path: P,
         name: &str,
         refiner: &CorpusRefiner,
@@ -204,7 +223,7 @@ impl Data {
         }
     }
 
-    fn from_file(file: File, name: &str, refiner: &CorpusRefiner) -> Result<Data, DataError> {
+    pub fn from_file(file: File, name: &str, refiner: &CorpusRefiner) -> Result<Data, DataError> {
         let chunker = FileChunker::new(&file).map_err(|_| DataError::ChunkerInitError)?;
 
         let file_len = file.metadata()?.len() as usize;
@@ -227,7 +246,7 @@ impl Data {
         Ok(res)
     }
 
-    pub(crate) fn save<P: AsRef<Path>>(self, folder: P) -> Result<(), DataError> {
+    pub fn save<P: AsRef<Path>>(self, folder: P) -> Result<(), DataError> {
         if self.name.is_empty() {
             return Err(DataError::NamelessDataError);
         }
@@ -254,45 +273,9 @@ impl Data {
 
 #[cfg(target_arch = "wasm32")]
 impl Data {
-    pub(crate) async fn load(url: &str) -> Result<Self, DataError> {
+    pub async fn load(url: &str) -> Result<Self, DataError> {
         let data = Request::new(&url).send().await?.json::<Self>().await?;
         Ok(data)
-    }
-}
-
-impl From<Corpus> for Data {
-    fn from(corpus: Corpus) -> Self {
-        let trigrams = corpus
-            .chars
-            .into_iter()
-            .combinations_with_replacement(3)
-            .zip(corpus.trigrams)
-            .filter(|(_, freq)| *freq > 0.0)
-            .map(|(v, f)| ([v[0], v[1], v[2]], f))
-            .collect();
-
-        Self {
-            name: corpus.name,
-            trigrams,
-        }
-    }
-}
-
-impl From<&Corpus> for Data {
-    fn from(corpus: &Corpus) -> Self {
-        let trigrams = corpus
-            .chars
-            .iter()
-            .combinations_with_replacement(3)
-            .zip(&corpus.trigrams)
-            .filter(|(_, &freq)| freq > 0.0)
-            .map(|(v, f)| ([*v[0], *v[1], *v[2]], *f))
-            .collect();
-
-        Self {
-            name: corpus.name.clone(),
-            trigrams,
-        }
     }
 }
 

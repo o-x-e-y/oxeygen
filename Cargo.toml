@@ -14,12 +14,14 @@ edition = "2021"
 members = [
     "gen-core",
     "gen-cli",
-    "gen-web"
+    "gen-generate",
+    "gen-web",
 ]
 
 [dependencies]
 gen-core = { path = "./gen-core" }
 gen-cli = { path = "./gen-cli" }
+gen-generate = { path = "./gen-generate" }
 gen-web = { path = "./gen-web" }
 
 [[bin]]

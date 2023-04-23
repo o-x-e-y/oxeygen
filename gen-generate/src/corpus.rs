@@ -3,7 +3,7 @@ use thiserror::Error;
 
 use std::{collections::HashMap, path::Path};
 
-use crate::{corpus_refiner::CorpusRefiner, data::Data};
+use gen_core::{corpus_refiner::CorpusRefiner, data::Data, layout::{KEY_AMOUNT, Layout, Key}};
 
 #[derive(Default, Clone)]
 pub struct Corpus {
@@ -16,7 +16,7 @@ pub struct Corpus {
 #[derive(Debug, Error)]
 pub enum CorpusError {
     #[error("DataError: {0}")]
-    DataError(#[from] crate::data::DataError),
+    DataError(#[from] gen_core::data::DataError),
 
     #[error("IoError: {0}")]
     IoError(#[from] std::io::Error),
@@ -118,6 +118,20 @@ impl Corpus {
             None
         }
     }
+
+    pub fn layout(&self, layout: [char; KEY_AMOUNT]) -> Option<Layout> {
+        let mut keys = [Key::MIN; KEY_AMOUNT];
+        
+        for (i, u) in self.encode(layout).enumerate() {
+            if let Some(key) = u {
+                keys[i] = key;
+            } else {
+                return None
+            }
+        }
+
+        Some(Layout::new(keys))
+    }
 }
 
 #[cfg(not(target_arch = "wasm32"))]
@@ -207,10 +221,40 @@ impl Corpus {
     }
 }
 
+impl From<Corpus> for Data {
+    fn from(corpus: Corpus) -> Self {
+        let trigrams = corpus
+            .chars
+            .into_iter()
+            .combinations_with_replacement(3)
+            .zip(corpus.trigrams)
+            .filter(|(_, freq)| *freq > 0.0)
+            .map(|(v, f)| ([v[0], v[1], v[2]], f))
+            .collect();
+
+        Data::new(trigrams, &corpus.name)
+    }
+}
+
+impl From<&Corpus> for Data {
+    fn from(corpus: &Corpus) -> Self {
+        let trigrams = corpus
+            .chars
+            .iter()
+            .combinations_with_replacement(3)
+            .zip(&corpus.trigrams)
+            .filter(|(_, &freq)| freq > 0.0)
+            .map(|(v, f)| ([*v[0], *v[1], *v[2]], *f))
+            .collect();
+
+            Data::new(trigrams, &corpus.name)
+    }
+}
+
 impl From<Data> for Corpus {
     fn from(data: Data) -> Self {
         let chars = data
-            .trigrams
+            .inner()
             .keys()
             .flatten()
             .unique()
@@ -226,18 +270,18 @@ impl From<Data> for Corpus {
 
         let mut trigrams = vec![0.0; chars.len().pow(3)];
 
-        for (t, freq) in data.trigrams {
+        for (t, freq) in data.inner() {
             let [t1, t2, t3] = &t;
 
             let u1 = char_to_index.get(t1).unwrap_or(&0) * char_to_index.len().pow(2);
             let u2 = char_to_index.get(t2).unwrap_or(&0) * char_to_index.len();
             let u3 = char_to_index.get(t3).unwrap_or(&0);
 
-            trigrams[u1 + u2 + u3] = freq;
+            trigrams[u1 + u2 + u3] = *freq;
         }
 
         Self {
-            name: data.name,
+            name: data.name().into(),
             char_to_index: char_to_index.clone(),
             chars,
             trigrams,

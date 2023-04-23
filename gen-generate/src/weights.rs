@@ -1,4 +1,4 @@
-use crate::{keyboard::*, keyboard_types::*, trigram_types::*};
+use gen_core::{keyboard::*, keyboard_types::*, trigram_types::*};
 
 pub struct Weights<'a> {
     inner: [f32; 27000], // { KEY_AMOUNT.pow(3) }
