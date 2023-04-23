@@ -18,6 +18,7 @@ pub mod keyboard;
 pub mod keyboard_types;
 pub mod layout;
 pub mod trigram_types;
+pub mod trigrams;
 pub mod weights;
 
 pub const REPLACEMENT_CHAR: char = char::REPLACEMENT_CHARACTER;
