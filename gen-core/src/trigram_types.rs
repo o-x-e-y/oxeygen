@@ -43,7 +43,7 @@ impl std::fmt::Display for &dyn TrigramType {
     }
 }
 
-pub mod default_trigram_types {
+pub mod default {
     use super::{Finger, TrigramType};
 
     #[derive(Default, Debug, Hash)]
@@ -195,7 +195,7 @@ pub mod default_trigram_types {
     }
 }
 
-use default_trigram_types::*;
+use default::*;
 
 pub struct TrigramTypes<'a> {
     types: Vec<&'a dyn TrigramType>,

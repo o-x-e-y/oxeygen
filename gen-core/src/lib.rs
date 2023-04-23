@@ -32,7 +32,7 @@ pub mod prelude {
     pub use corpus_refiner::{CorpusRefiner, RefineCorpus};
     pub use keyboard::Keyboard;
     pub use layout::Layout;
-    pub use trigram_types::{default_trigram_types, TrigramType, TrigramTypes};
+    pub use trigram_types::{default, TrigramType, TrigramTypes};
     pub use weights::Weights;
 }
 
