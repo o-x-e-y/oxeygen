@@ -13,8 +13,8 @@ mod exclude_wasm {
         path::Path,
     };
 
-    pub use memmap2::Mmap;
     pub use file_chunker::FileChunker;
+    pub use memmap2::Mmap;
     pub use rayon::prelude::*;
     pub use serde_json::ser::PrettyFormatter;
 
@@ -146,7 +146,8 @@ impl std::ops::Add for Data {
 impl Data {
     pub fn new(trigrams: FxIndexMap<[char; 3], f32>, name: &str) -> Self {
         Self {
-            trigrams, name: name.into()
+            trigrams,
+            name: name.into(),
         }
     }
 

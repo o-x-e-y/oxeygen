@@ -23,7 +23,9 @@ impl Default for Fingerings {
 
 impl Fingerings {
     pub fn custom<const N: usize>(fingerings: [Finger; N]) -> Self {
-        Self { inner: Box::new(fingerings) }
+        Self {
+            inner: Box::new(fingerings),
+        }
     }
 
     pub fn get_fingering(&self, pos: Pos) -> Option<Finger> {
@@ -40,7 +42,7 @@ impl Fingerings {
         res
     }
 
-    pub fn inner(&self) -> &[Finger]{
+    pub fn inner(&self) -> &[Finger] {
         &self.inner
     }
 
@@ -69,7 +71,9 @@ impl Default for PhysicalDistances {
 
 impl PhysicalDistances {
     pub fn custom<const N: usize>(distances: [(f64, f64); N]) -> Self {
-        Self { inner: Box::new(distances) }
+        Self {
+            inner: Box::new(distances),
+        }
     }
 
     pub fn get_coordinate(&self, pos: Pos) -> Option<&(f64, f64)> {
@@ -125,8 +129,8 @@ impl Keyboard {
             (Some((x1, y1)), Some((x2, y2))) => {
                 let dist = (x1 - x2).hypot(y1 - y2);
                 Some(dist)
-            },
-            _ => None
+            }
+            _ => None,
         }
     }
 

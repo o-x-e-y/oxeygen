@@ -1,8 +1,4 @@
-#![feature(
-    const_trait_impl,
-    const_hash,
-    step_trait,
-)]
+#![feature(const_trait_impl, const_hash, step_trait)]
 
 pub mod corpus_refiner;
 pub mod data;

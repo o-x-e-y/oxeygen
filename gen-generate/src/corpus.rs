@@ -36,11 +36,7 @@ impl Corpus {
     ) -> impl Iterator<Item = Option<usize>> + 'a {
         chars
             .into_iter()
-            .map(|c| {
-                self.char_to_index
-                    .get(&c)
-                    .copied()
-            })
+            .map(|c| self.char_to_index.get(&c).copied())
     }
 
     pub fn encode_slice<'a>(
@@ -49,18 +45,12 @@ impl Corpus {
     ) -> impl Iterator<Item = Option<usize>> + 'a {
         chars
             .into_iter()
-            .map(|c| {
-                self.char_to_index
-                    .get(c)
-                    .copied()
-            })
+            .map(|c| self.char_to_index.get(c).copied())
     }
 
     pub fn encode_trigram(&self, trigram: [char; 3]) -> Option<[usize; 3]> {
         if let Some(u1) = self.char_to_index.get(&trigram[0]) {
-
             if let Some(u2) = self.char_to_index.get(&trigram[1]) {
-
                 if let Some(u3) = self.char_to_index.get(&trigram[2]) {
                     return Some([*u1, *u2, *u3]);
                 }
@@ -74,13 +64,7 @@ impl Corpus {
         &'a self,
         chars: impl IntoIterator<Item = usize> + 'a,
     ) -> impl Iterator<Item = Option<char>> + 'a {
-        chars
-            .into_iter()
-            .map(|c| {
-                self.chars
-                .get(c)
-                .copied()
-            })
+        chars.into_iter().map(|c| self.chars.get(c).copied())
     }
 
     pub fn decode_slice<'a>(
@@ -90,18 +74,12 @@ impl Corpus {
         chars
             .into_iter()
             .copied()
-            .map(|c| {
-                self.chars
-                .get(c)
-                .copied()
-            })
+            .map(|c| self.chars.get(c).copied())
     }
 
     pub fn decode_trigram(&self, trigram: [usize; 3]) -> Option<[char; 3]> {
         if let Some(u1) = self.chars.get(trigram[0]) {
-
             if let Some(u2) = self.chars.get(trigram[1]) {
-                
                 if let Some(u3) = self.chars.get(trigram[2]) {
                     return Some([*u1, *u2, *u3]);
                 }
@@ -121,7 +99,7 @@ impl Corpus {
 
     // pub fn layout(&self, layout: [char; KEY_AMOUNT]) -> Option<Layout> {
     //     let mut keys = [Key::MIN; KEY_AMOUNT];
-        
+
     //     for (i, u) in self.encode(layout).enumerate() {
     //         if let Some(key) = u {
     //             keys[i] = key;
@@ -247,7 +225,7 @@ impl From<&Corpus> for Data {
             .map(|(v, f)| ([*v[0], *v[1], *v[2]], *f))
             .collect();
 
-            Data::new(trigrams, &corpus.name)
+        Data::new(trigrams, &corpus.name)
     }
 }
 
@@ -348,7 +326,9 @@ mod tests {
         let corpus = Corpus::load("../data/akl.json").expect("this should always exist");
 
         let start = "abc";
-        let encoded = corpus.encode(start.chars()).collect::<Option<Vec<_>>>()
+        let encoded = corpus
+            .encode(start.chars())
+            .collect::<Option<Vec<_>>>()
             .expect("could not encode {start}");
 
         let decoded = corpus
@@ -363,7 +343,8 @@ mod tests {
     fn get() {
         let corpus = Corpus::load("../data/akl.json").expect("this should always exist");
 
-        let the = corpus.freq(['t', 'h', 'e'])
+        let the = corpus
+            .freq(['t', 'h', 'e'])
             .expect("trigram \"the\" not found in corpus");
 
         assert_eq!(

@@ -240,7 +240,10 @@ where
 }
 
 pub trait RefineCorpus: Iterator {
-    fn refine(self, refiner: &CorpusRefiner) -> CorpusRefinerIterator<'_, impl Iterator<Item = char>>
+    fn refine(
+        self,
+        refiner: &CorpusRefiner,
+    ) -> CorpusRefinerIterator<'_, impl Iterator<Item = char>>
     where
         Self: Iterator<Item = char>,
         Self: Sized,

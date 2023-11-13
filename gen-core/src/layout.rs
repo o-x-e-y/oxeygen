@@ -13,11 +13,7 @@ pub struct Layout {
 
 impl Layout {
     pub fn new<const N: usize>(keys: [char; N]) -> Self {
-        let char_to_pos = keys
-            .iter()
-            .copied()
-            .zip(0..)
-            .collect::<FxHashMap<_, _>>();
+        let char_to_pos = keys.iter().copied().zip(0..).collect::<FxHashMap<_, _>>();
 
         Self {
             matrix: Box::new(keys),
