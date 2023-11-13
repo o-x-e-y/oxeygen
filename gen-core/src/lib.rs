@@ -1,14 +1,7 @@
-#![allow(incomplete_features)]
 #![feature(
     const_trait_impl,
-    // const_default_impls,
     const_hash,
-    iter_array_chunks,
     step_trait,
-    // let_chains,
-    // slice_index_methods,
-    adt_const_params,
-    const_mut_refs
 )]
 
 pub mod corpus_refiner;
@@ -16,8 +9,8 @@ pub mod data;
 pub mod keyboard;
 pub mod keyboard_types;
 pub mod layout;
+pub mod layout2;
 pub mod trigram_types;
-pub mod stats;
 
 pub const REPLACEMENT_CHAR: char = char::REPLACEMENT_CHARACTER;
 pub const SHIFT_CHAR: char = '⇑';

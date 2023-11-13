@@ -11,8 +11,8 @@ pub struct IsoKeyboard<'a> {
 pub fn Keyboard<'a>(cx: Scope, keyboard: &'a IsoKeyboard<'a>) -> Element {
     cx.render(rsx! {
         style { include_str!("../css/keyboard_iso.css") }
-        div { id: "keyboard-wrapper-iso",
-            div { id: "keyboard",
+        div { class: "keyboard-wrapper-iso",
+            div { class: "keyboard",
                 div { class: "row num-row",
                     keyboard.num_row
                         .into_iter()

@@ -16,6 +16,7 @@ pub struct CorpusRefiner {
 
 pub struct CorpusRefinerBuilder {
     // multiple_char_rules: FxHashMap<usize, Vec<(Vec<char>, Vec<char>)>>,
+    shift_to_replacement: bool,
     longest_rule: usize,
     map: FxHashMap<char, Vec<char>>,
     repeat_key: bool,
@@ -27,6 +28,7 @@ impl CorpusRefiner {
     pub fn new() -> CorpusRefinerBuilder {
         CorpusRefinerBuilder {
             // multiple_char_rules: FxHashMap::default(),
+            shift_to_replacement: false,
             longest_rule: 1,
             map: FxHashMap::default(),
             repeat_key: false,
@@ -55,6 +57,7 @@ impl CorpusRefinerBuilder {
         lower_upper: impl IntoIterator<Item = (char, char)>,
         include_lowercase_versions: bool,
     ) -> &mut Self {
+        let x = 10;
         if include_lowercase_versions {
             for (lower, upper) in lower_upper {
                 self.map.insert(lower, vec![lower]);
@@ -65,6 +68,11 @@ impl CorpusRefinerBuilder {
                 self.map.insert(upper, vec![SHIFT_CHAR, lower]);
             }
         }
+        self
+    }
+
+    pub fn exclude_shift_char(&mut self) -> &mut Self {
+        self.shift_to_replacement = true;
         self
     }
 
@@ -116,16 +124,16 @@ impl CorpusRefinerBuilder {
         self.with_uppercase(
             [
                 ('`', '~'),
-                ('1', '!'),
-                ('2', '@'),
-                ('3', '#'),
-                ('4', '$'),
-                ('5', '%'),
-                ('6', '^'),
-                ('7', '&'),
-                ('8', '*'),
-                ('9', '('),
-                ('0', ')'),
+                // ('1', '!'),
+                // ('2', '@'),
+                // ('3', '#'),
+                // ('4', '$'),
+                // ('5', '%'),
+                // ('6', '^'),
+                // ('7', '&'),
+                // ('8', '*'),
+                // ('9', '('),
+                // ('0', ')'),
                 ('[', '{'),
                 (']', '}'),
                 ('/', '?'),
@@ -171,6 +179,16 @@ impl CorpusRefinerBuilder {
     }
 
     pub fn build(&mut self) -> CorpusRefiner {
+        if self.shift_to_replacement {
+            for translation in self.map.values_mut() {
+                for c in translation {
+                    if *c == SHIFT_CHAR {
+                        *c = REPLACEMENT_CHAR;
+                    }
+                }
+            }
+        }
+
         CorpusRefiner {
             // multiple_char_rules: self.multiple_char_rules,
             longest_rule: self.longest_rule,
@@ -185,18 +203,19 @@ impl CorpusRefinerBuilder {
 #[derive(Debug)]
 pub struct CorpusRefinerIterator<'a, I> {
     refiner: &'a CorpusRefiner,
-    iter: iter::Chain<I, iter::Once<char>>,
+    iter: I,
     window: SlidingWindow<char>,
     is_shift_pressed: bool,
 }
 
-impl<'a, I> CorpusRefinerIterator<'a, I>
-where
-    I: Iterator<Item = char>,
-{
-    fn new(iter: I, refiner: &'a CorpusRefiner) -> CorpusRefinerIterator<'a, I> {
+fn intermediate(iter: impl Iterator<Item = char>) -> impl Iterator<Item = char> {
+    iter
+}
+
+impl<'a, I> CorpusRefinerIterator<'a, I> {
+    fn new(iter: impl Iterator<Item = char>, refiner: &'a CorpusRefiner) -> CorpusRefinerIterator<'a, I> {
         let window = SlidingWindow::new(refiner.longest_rule, REPLACEMENT_CHAR);
-        let iter = iter.chain(iter::once(REPLACEMENT_CHAR));
+        let iter = intermediate(iter.chain(iter::once(REPLACEMENT_CHAR)));
 
         CorpusRefinerIterator {
             refiner,

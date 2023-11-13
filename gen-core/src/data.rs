@@ -13,8 +13,8 @@ mod exclude_wasm {
         path::Path,
     };
 
+    pub use memmap2::Mmap;
     pub use file_chunker::FileChunker;
-    pub use memmap2::{Mmap, MmapOptions};
     pub use rayon::prelude::*;
     pub use serde_json::ser::PrettyFormatter;
 

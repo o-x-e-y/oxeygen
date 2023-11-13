@@ -148,8 +148,8 @@ pub mod default {
             let (f1, f2, f3) = (f1 as u8, f2 as u8, f3 as u8);
             let [lh1, lh2, lh3] = [f1 < 5, f2 < 5, f3 < 5];
 
-            (lh1 && lh2 && lh3) && (f1 > f2 && f2 > f3)
-                || !(lh1 || lh2 || lh3) && (f1 < f2 && f2 < f3)
+            (lh1 && lh2 && lh3) && (f1 < f2 && f2 < f3)
+                || !(lh1 || lh2 || lh3) && (f1 > f2 && f2 > f3)
         }
 
         fn display(&self) -> &'static str {
@@ -162,8 +162,8 @@ pub mod default {
             let (f1, f2, f3) = (f1 as u8, f2 as u8, f3 as u8);
             let [lh1, lh2, lh3] = [f1 < 5, f2 < 5, f3 < 5];
 
-            (lh1 && lh2 && lh3) && (f1 < f2 && f2 < f3)
-                || !(lh1 || lh2 || lh3) && (f1 > f2 && f2 > f3)
+            (lh1 && lh2 && lh3) && (f1 > f2 && f2 > f3)
+                || !(lh1 || lh2 || lh3) && (f1 < f2 && f2 < f3)
         }
 
         fn display(&self) -> &'static str {
@@ -197,6 +197,7 @@ pub mod default {
 
 use default::*;
 
+#[derive(Debug, Clone)]
 pub struct TrigramTypes<'a> {
     types: Vec<&'a dyn TrigramType>,
     default: &'a dyn TrigramType,
@@ -221,6 +222,10 @@ impl<'a> Default for TrigramTypes<'a> {
 }
 
 impl<'a> TrigramTypes<'a> {
+    pub fn unspecified(&self) -> &'a dyn TrigramType {
+        self.default
+    }
+
     pub fn match_type(&self, fingers: [Finger; 3]) -> &'a dyn TrigramType {
         *self
             .types
@@ -230,7 +235,8 @@ impl<'a> TrigramTypes<'a> {
     }
 
     fn has_overlap(&self) -> bool {
-        let definition_overlap = (LP..=RP)
+        let definition_overlap = [LP, LR, LM, LI, LT, RT, RI, RM, RR, RP]
+            .into_iter()
             .combinations_with_replacement(3)
             .map(|v| [v[0], v[1], v[2]])
             .cartesian_product(&self.types)
