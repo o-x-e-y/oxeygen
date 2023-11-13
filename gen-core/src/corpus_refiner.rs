@@ -1,5 +1,3 @@
-use std::iter;
-
 use fxhash::FxHashMap;
 use sliding_window_alt::SlidingWindow;
 
@@ -57,7 +55,6 @@ impl CorpusRefinerBuilder {
         lower_upper: impl IntoIterator<Item = (char, char)>,
         include_lowercase_versions: bool,
     ) -> &mut Self {
-        let x = 10;
         if include_lowercase_versions {
             for (lower, upper) in lower_upper {
                 self.map.insert(lower, vec![lower]);
@@ -208,24 +205,6 @@ pub struct CorpusRefinerIterator<'a, I> {
     is_shift_pressed: bool,
 }
 
-fn intermediate(iter: impl Iterator<Item = char>) -> impl Iterator<Item = char> {
-    iter
-}
-
-impl<'a, I> CorpusRefinerIterator<'a, I> {
-    fn new(iter: impl Iterator<Item = char>, refiner: &'a CorpusRefiner) -> CorpusRefinerIterator<'a, I> {
-        let window = SlidingWindow::new(refiner.longest_rule, REPLACEMENT_CHAR);
-        let iter = intermediate(iter.chain(iter::once(REPLACEMENT_CHAR)));
-
-        CorpusRefinerIterator {
-            refiner,
-            iter,
-            window,
-            is_shift_pressed: false,
-        }
-    }
-}
-
 impl<'a, I> Iterator for CorpusRefinerIterator<'a, I>
 where
     I: Iterator<Item = char>,
@@ -261,12 +240,20 @@ where
 }
 
 pub trait RefineCorpus: Iterator {
-    fn refine(self, refiner: &CorpusRefiner) -> CorpusRefinerIterator<'_, Self>
+    fn refine(self, refiner: &CorpusRefiner) -> CorpusRefinerIterator<'_, impl Iterator<Item = char>>
     where
         Self: Iterator<Item = char>,
         Self: Sized,
     {
-        CorpusRefinerIterator::new(self, refiner)
+        let window = SlidingWindow::new(refiner.longest_rule, REPLACEMENT_CHAR);
+        let iter = self.chain([REPLACEMENT_CHAR, REPLACEMENT_CHAR]);
+
+        CorpusRefinerIterator {
+            refiner,
+            iter,
+            window,
+            is_shift_pressed: false,
+        }
     }
 }
 
