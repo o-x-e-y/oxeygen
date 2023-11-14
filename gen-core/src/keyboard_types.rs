@@ -1,6 +1,5 @@
 use crate::keyboard::*;
 
-#[const_trait]
 pub trait KeyboardType {
     const KEY_SIZE: f64 = DEFAULT_KEY_SIZE;
 

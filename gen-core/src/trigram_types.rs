@@ -7,7 +7,10 @@ use std::{
 use itertools::Itertools;
 use thiserror::*;
 
-use crate::keyboard::*;
+use crate::{
+    keyboard::*,
+    keyboard_types::{Ansi, KeyboardType}
+};
 
 #[derive(Debug, Error)]
 pub enum TrigramError {
@@ -15,11 +18,10 @@ pub enum TrigramError {
     TrigramOverlapError,
 }
 
-#[const_trait]
-pub trait TrigramType: std::fmt::Debug {
-    fn is_type(&self, _: [Finger; 3]) -> bool;
+pub trait TrigramType {
+    fn is_type(&self, keyboard: &Keyboard, positions: [Pos; 3]) -> bool;
 
-    fn display(&self) -> &'static str;
+    fn display(&self) -> &str;
 }
 
 impl Default for &dyn TrigramType {
@@ -44,63 +46,68 @@ impl std::fmt::Display for &dyn TrigramType {
 }
 
 pub mod default {
-    use super::{Finger, TrigramType};
+    use super::*;
 
-    #[derive(Default, Debug, Hash)]
     pub struct Sfb;
 
-    #[derive(Default, Debug, Hash)]
     pub struct Sfr;
 
-    #[derive(Default, Debug, Hash)]
     pub struct Sft;
 
-    #[derive(Default, Debug, Hash)]
     pub struct Inroll;
 
-    #[derive(Default, Debug, Hash)]
     pub struct Outroll;
 
-    #[derive(Default, Debug, Hash)]
     pub struct Alternation;
 
-    #[derive(Default, Debug, Hash)]
     pub struct Redirect;
 
-    #[derive(Default, Debug, Hash)]
     pub struct OnehandIn;
 
-    #[derive(Default, Debug, Hash)]
     pub struct OnehandOut;
 
-    #[derive(Default, Debug, Hash)]
     pub struct Unspecified;
 
-    impl const TrigramType for Sfb {
-        fn is_type(&self, [f1, f2, f3]: [Finger; 3]) -> bool {
-            let (f1, f2, f3) = (f1 as u8, f2 as u8, f3 as u8);
+    impl TrigramType for Sfb {
+        fn is_type(&self, keyboard: &Keyboard, positions: [Pos; 3]) -> bool {
+            let fingerings = keyboard.get_fingerings(positions);
+            let (f1, f2, f3) = match fingerings {
+                [Some(f1), Some(f2), Some(f3)] => (f1 as u8, f2 as u8, f3 as u8),
+                _ => return false
+            };
+            
             (f1 == f2 || f2 == f3) && f1 != f3
         }
 
-        fn display(&self) -> &'static str {
+        fn display(&self) -> &str {
             "Sfb"
         }
     }
 
-    impl const TrigramType for Sft {
-        fn is_type(&self, [f1, f2, f3]: [Finger; 3]) -> bool {
-            let (f1, f2, f3) = (f1 as u8, f2 as u8, f3 as u8);
+    impl TrigramType for Sft {
+        fn is_type(&self, keyboard: &Keyboard, positions: [Pos; 3]) -> bool {
+            let fingerings = keyboard.get_fingerings(positions);
+            let (f1, f2, f3) = match fingerings {
+                [Some(f1), Some(f2), Some(f3)] => (f1 as u8, f2 as u8, f3 as u8),
+                _ => return false
+            };
+
             f1 == f2 && f2 == f3
         }
 
-        fn display(&self) -> &'static str {
+        fn display(&self) -> &str {
             "Sft"
         }
     }
 
-    impl const TrigramType for Inroll {
-        fn is_type(&self, [f1, f2, f3]: [Finger; 3]) -> bool {
-            let (f1, f2, f3) = (f1 as u8, f2 as u8, f3 as u8);
+    impl TrigramType for Inroll {
+        fn is_type(&self, keyboard: &Keyboard, positions: [Pos; 3]) -> bool {
+            let fingerings = keyboard.get_fingerings(positions);
+            let (f1, f2, f3) = match fingerings {
+                [Some(f1), Some(f2), Some(f3)] => (f1 as u8, f2 as u8, f3 as u8),
+                _ => return false
+            };
+
             let [lh1, lh2, lh3] = [f1 < 5, f2 < 5, f3 < 5];
 
             (lh1 && lh2 && !lh3) && f1 < f2
@@ -109,14 +116,19 @@ pub mod default {
                 || (lh1 && !lh2 && !lh3) && f2 > f3
         }
 
-        fn display(&self) -> &'static str {
+        fn display(&self) -> &str {
             "Inroll"
         }
     }
 
-    impl const TrigramType for Outroll {
-        fn is_type(&self, [f1, f2, f3]: [Finger; 3]) -> bool {
-            let (f1, f2, f3) = (f1 as u8, f2 as u8, f3 as u8);
+    impl TrigramType for Outroll {
+        fn is_type(&self, keyboard: &Keyboard, positions: [Pos; 3]) -> bool {
+            let fingerings = keyboard.get_fingerings(positions);
+            let (f1, f2, f3) = match fingerings {
+                [Some(f1), Some(f2), Some(f3)] => (f1 as u8, f2 as u8, f3 as u8),
+                _ => return false
+            };
+
             let [lh1, lh2, lh3] = [f1 < 5, f2 < 5, f3 < 5];
 
             (lh1 && lh2 && !lh3) && f1 > f2
@@ -125,80 +137,130 @@ pub mod default {
                 || (lh1 && !lh2 && !lh3) && f2 < f3
         }
 
-        fn display(&self) -> &'static str {
+        fn display(&self) -> &str {
             "Outroll"
         }
     }
 
-    impl const TrigramType for Alternation {
-        fn is_type(&self, [f1, f2, f3]: [Finger; 3]) -> bool {
-            let (f1, f2, f3) = (f1 as u8, f2 as u8, f3 as u8);
+    impl TrigramType for Alternation {
+        fn is_type(&self, keyboard: &Keyboard, positions: [Pos; 3]) -> bool {
+            let fingerings = keyboard.get_fingerings(positions);
+            let (f1, f2, f3) = match fingerings {
+                [Some(f1), Some(f2), Some(f3)] => (f1 as u8, f2 as u8, f3 as u8),
+                _ => return false
+            };
+
             let [lh1, lh2, lh3] = [f1 < 5, f2 < 5, f3 < 5];
 
             lh1 && !lh2 && lh3 || !lh1 && lh2 && !lh3
         }
 
-        fn display(&self) -> &'static str {
+        fn display(&self) -> &str {
             "Alternation"
         }
     }
 
-    impl const TrigramType for OnehandIn {
-        fn is_type(&self, [f1, f2, f3]: [Finger; 3]) -> bool {
-            let (f1, f2, f3) = (f1 as u8, f2 as u8, f3 as u8);
+    impl TrigramType for OnehandIn {
+        fn is_type(&self, keyboard: &Keyboard, positions: [Pos; 3]) -> bool {
+            let fingerings = keyboard.get_fingerings(positions);
+            let (f1, f2, f3) = match fingerings {
+                [Some(f1), Some(f2), Some(f3)] => (f1 as u8, f2 as u8, f3 as u8),
+                _ => return false
+            };
+
             let [lh1, lh2, lh3] = [f1 < 5, f2 < 5, f3 < 5];
 
             (lh1 && lh2 && lh3) && (f1 < f2 && f2 < f3)
                 || !(lh1 || lh2 || lh3) && (f1 > f2 && f2 > f3)
         }
 
-        fn display(&self) -> &'static str {
+        fn display(&self) -> &str {
             "Onehand In"
         }
     }
 
-    impl const TrigramType for OnehandOut {
-        fn is_type(&self, [f1, f2, f3]: [Finger; 3]) -> bool {
-            let (f1, f2, f3) = (f1 as u8, f2 as u8, f3 as u8);
+    impl TrigramType for OnehandOut {
+        fn is_type(&self, keyboard: &Keyboard, positions: [Pos; 3]) -> bool {
+            let fingerings = keyboard.get_fingerings(positions);
+            let (f1, f2, f3) = match fingerings {
+                [Some(f1), Some(f2), Some(f3)] => (f1 as u8, f2 as u8, f3 as u8),
+                _ => return false
+            };
+
             let [lh1, lh2, lh3] = [f1 < 5, f2 < 5, f3 < 5];
 
             (lh1 && lh2 && lh3) && (f1 > f2 && f2 > f3)
                 || !(lh1 || lh2 || lh3) && (f1 < f2 && f2 < f3)
         }
 
-        fn display(&self) -> &'static str {
+        fn display(&self) -> &str {
             "Onehand Out"
         }
     }
 
-    impl const TrigramType for Redirect {
-        fn is_type(&self, [f1, f2, f3]: [Finger; 3]) -> bool {
-            let (f1, f2, f3) = (f1 as u8, f2 as u8, f3 as u8);
+    impl TrigramType for Redirect {
+        fn is_type(&self, keyboard: &Keyboard, positions: [Pos; 3]) -> bool {
+            let fingerings = keyboard.get_fingerings(positions);
+            let (f1, f2, f3) = match fingerings {
+                [Some(f1), Some(f2), Some(f3)] => (f1 as u8, f2 as u8, f3 as u8),
+                _ => return false
+            };
+
             let [lh1, lh2, lh3] = [f1 < 5, f2 < 5, f3 < 5];
 
             (lh1 == lh2 && lh2 == lh3) && ((f1 < f2 && f2 > f3) || (f1 > f2 && f2 < f3))
         }
 
-        fn display(&self) -> &'static str {
+        fn display(&self) -> &str {
             "Redirect"
         }
     }
 
-    impl const TrigramType for Unspecified {
-        fn is_type(&self, _: [Finger; 3]) -> bool {
+    impl TrigramType for Unspecified {
+        fn is_type(&self, _: &Keyboard, _: [Pos; 3]) -> bool {
             false
         }
 
-        fn display(&self) -> &'static str {
+        fn display(&self) -> &str {
             "Unspecified"
         }
     }
 }
 
+#[derive(Debug)]
+pub struct DynamicType {
+    is_type: fn([Finger; 3]) -> bool,
+    display: String
+}
+
+impl TrigramType for DynamicType {
+    fn is_type(&self, keyboard: &Keyboard, positions: [Pos; 3]) -> bool {
+        let fingerings = keyboard.get_fingerings(positions);
+        let fingers = match fingerings {
+            [Some(f1), Some(f2), Some(f3)] => [f1, f2, f3],
+            _ => return false
+        };
+
+        (self.is_type)(fingers)
+    }
+
+    fn display(&self) -> &str {
+        self.display.as_str()
+    }
+}
+
+impl DynamicType {
+    pub fn new(is_type: fn([Finger; 3]) -> bool, display: impl Into<String>) -> Self {
+        let display = display.into();
+        Self { is_type, display }
+    }
+}
+
 use default::*;
 
-#[derive(Debug, Clone)]
+#[derive(Clone)]
 pub struct TrigramTypes<'a> {
+    keyboard: Keyboard,
     types: Vec<&'a dyn TrigramType>,
     default: &'a dyn TrigramType,
 }
@@ -206,6 +268,7 @@ pub struct TrigramTypes<'a> {
 impl<'a> Default for TrigramTypes<'a> {
     fn default() -> Self {
         Self {
+            keyboard: Ansi::keyboard(),
             types: vec![
                 &Sfb,
                 &Sft,
@@ -226,25 +289,22 @@ impl<'a> TrigramTypes<'a> {
         self.default
     }
 
-    pub fn match_type(&self, fingers: [Finger; 3]) -> &'a dyn TrigramType {
+    pub fn match_type(&self, keyboard: &Keyboard, positions: [Pos; 3]) -> &'a dyn TrigramType {
         *self
             .types
             .iter()
-            .find(|e| e.is_type(fingers))
+            .find(|e| e.is_type(keyboard, positions))
             .unwrap_or(&self.default)
     }
 
     fn has_overlap(&self) -> bool {
-        let definition_overlap = [LP, LR, LM, LI, LT, RT, RI, RM, RR, RP]
-            .into_iter()
-            .combinations_with_replacement(3)
-            .map(|v| [v[0], v[1], v[2]])
+        let definition_overlap = self.keyboard.positions_iter()
             .cartesian_product(&self.types)
             .chunks(self.types.len())
             .into_iter()
             .map(|c| {
                 c.into_iter()
-                    .filter(|(fingers, t)| t.is_type(*fingers))
+                    .filter(|(positions, t)| t.is_type(&self.keyboard, positions.clone()))
                     .count()
             })
             .any(|c| c > 1);
@@ -263,8 +323,9 @@ impl<'a> TrigramTypes<'a> {
         definition_overlap && hash_overlap
     }
 
-    pub fn new(types: Vec<&'a dyn TrigramType>) -> Result<Self, TrigramError> {
+    pub fn new(types: Vec<&'a dyn TrigramType>, keyboard: Keyboard) -> Result<Self, TrigramError> {
         let new = Self {
+            keyboard,
             types,
             default: &Unspecified,
         };

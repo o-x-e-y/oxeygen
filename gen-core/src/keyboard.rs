@@ -1,3 +1,4 @@
+use itertools::Itertools;
 pub use libdof::prelude::Finger;
 pub use Finger::*;
 
@@ -148,5 +149,11 @@ impl Keyboard {
 
     pub fn get_fingerings<const N: usize>(&self, positions: [Pos; N]) -> [Option<Finger>; N] {
         self.fingerings.get_fingerings(positions)
+    }
+
+    pub fn positions_iter(&self) -> impl Iterator<Item = [Pos; 3]> {
+        let base = 0..self.fingerings.inner().len();
+        base.clone().cartesian_product(base.clone()).cartesian_product(base)
+        .map(|((p1, p2), p3)| [p1, p2, p3])
     }
 }
