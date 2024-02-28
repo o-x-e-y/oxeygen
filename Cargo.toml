@@ -13,6 +13,7 @@ members = [
     "gen-cli",
     "gen-web"
 ]
+resolver = "2"
 
 [dependencies]
 gen-core = { path = "./gen-core" }
