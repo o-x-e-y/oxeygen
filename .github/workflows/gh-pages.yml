@@ -35,9 +35,7 @@ jobs:
       uses: dtolnay/rust-toolchain@nightly
       with:
         components: clippy, rustfmt
-
-    - name: Add WASM target
-      run: rustup target add wasm32-unknown-unknown
+        targets: wasm32-unknown-unknown
 
     - name: lint
       run: cargo clippy & cargo fmt
