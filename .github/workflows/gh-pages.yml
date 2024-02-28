@@ -48,39 +48,39 @@ Github-Pages-Release:
     #   run: npm install -D tailwindcss && npx tailwindcss -i <INPUT/PATH.css> -o <OUTPUT/PATH.css>  # run tailwind
 
 
-    - name: Download and install Trunk binary
-        run: wget -qO- https://github.com/trunk-rs/trunk/releases/download/v0.18.2/trunk-x86_64-unknown-linux-gnu.tar.gz | tar -xzf-
+    # - name: Download and install Trunk binary
+    #     run: wget -qO- https://github.com/trunk-rs/trunk/releases/download/v0.18.2/trunk-x86_64-unknown-linux-gnu.tar.gz | tar -xzf-
 
-    - name: Build with Trunk
-        # "${GITHUB_REPOSITORY#*/}" evaluates into the name of the repository
-        # using --public-url something will allow trunk to modify all the href paths like from favicon.ico to repo_name/favicon.ico .
-        # this is necessary for github pages where the site is deployed to username.github.io/repo_name and all files must be requested
-        # relatively as favicon.ico. if we skip public-url option, the href paths will instead request username.github.io/favicon.ico which
-        # will obviously return error 404 not found.
-        run: ./trunk build --release --public-url "${GITHUB_REPOSITORY#*/}"
-
-
-    # Deploy to gh-pages branch
-    # - name: Deploy 🚀
-    #   uses: JamesIves/github-pages-deploy-action@v4
-    #   with:
-    #     folder: dist
+    # - name: Build with Trunk
+    #     # "${GITHUB_REPOSITORY#*/}" evaluates into the name of the repository
+    #     # using --public-url something will allow trunk to modify all the href paths like from favicon.ico to repo_name/favicon.ico .
+    #     # this is necessary for github pages where the site is deployed to username.github.io/repo_name and all files must be requested
+    #     # relatively as favicon.ico. if we skip public-url option, the href paths will instead request username.github.io/favicon.ico which
+    #     # will obviously return error 404 not found.
+    #     run: ./trunk build --release --public-url "${GITHUB_REPOSITORY#*/}"
 
 
-    # Deploy with Github Static Pages
+    # # Deploy to gh-pages branch
+    # # - name: Deploy 🚀
+    # #   uses: JamesIves/github-pages-deploy-action@v4
+    # #   with:
+    # #     folder: dist
 
-    - name: Setup Pages
-        uses: actions/configure-pages@v4
-        with:
-        enablement: true
-        # token:
 
-    - name: Upload artifact
-        uses: actions/upload-pages-artifact@v2
-        with:
-        # Upload dist dir
-        path: './dist'
+    # # Deploy with Github Static Pages
 
-    - name: Deploy to GitHub Pages 🚀
-        id: deployment
-        uses: actions/deploy-pages@v3
+    # - name: Setup Pages
+    #     uses: actions/configure-pages@v4
+    #     with:
+    #     enablement: true
+    #     # token:
+
+    # - name: Upload artifact
+    #     uses: actions/upload-pages-artifact@v2
+    #     with:
+    #     # Upload dist dir
+    #     path: './dist'
+
+    # - name: Deploy to GitHub Pages 🚀
+    #     id: deployment
+    #     uses: actions/deploy-pages@v3
