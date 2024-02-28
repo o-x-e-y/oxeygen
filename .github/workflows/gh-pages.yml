@@ -2,8 +2,7 @@ name: Release to Github Pages
 
 on:
 push:
-    branches: 
-      - main
+    branches: [main]
 workflow_dispatch:
 
 permissions:
@@ -58,14 +57,14 @@ Github-Pages-Release:
         # this is necessary for github pages where the site is deployed to username.github.io/repo_name and all files must be requested
         # relatively as favicon.ico. if we skip public-url option, the href paths will instead request username.github.io/favicon.ico which
         # will obviously return error 404 not found.
-        run: cd ./gen-web && ../trunk build --release --public-url "${GITHUB_REPOSITORY#*/}"
+        run: ./trunk build --release --public-url "${GITHUB_REPOSITORY#*/}"
 
 
     # Deploy to gh-pages branch
     # - name: Deploy 🚀
     #   uses: JamesIves/github-pages-deploy-action@v4
     #   with:
-    #     folder: gen-web/dist
+    #     folder: dist
 
 
     # Deploy with Github Static Pages
@@ -80,7 +79,7 @@ Github-Pages-Release:
         uses: actions/upload-pages-artifact@v2
         with:
         # Upload dist dir
-        path: './gen-web/dist'
+        path: './dist'
 
     - name: Deploy to GitHub Pages 🚀
         id: deployment
