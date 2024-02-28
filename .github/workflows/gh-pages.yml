@@ -58,27 +58,27 @@ jobs:
       run: cd ./gen-web && ../trunk build --public-url "${GITHUB_REPOSITORY#*/}"
 
 
-    # # Deploy to gh-pages branch
-    # # - name: Deploy 🚀
-    # #   uses: JamesIves/github-pages-deploy-action@v4
-    # #   with:
-    # #     folder: dist
+    Deploy to gh-pages branch
+    - name: Deploy 🚀
+      uses: JamesIves/github-pages-deploy-action@v4
+      with:
+        folder: gen-web/dist
 
 
-    # # Deploy with Github Static Pages
+    # Deploy with Github Static Pages
 
-    # - name: Setup Pages
-    #     uses: actions/configure-pages@v4
-    #     with:
-    #     enablement: true
-    #     # token:
+    - name: Setup Pages
+      uses: actions/configure-pages@v4
+      with:
+        enablement: true
+        token: ${{ secrets.GITHUB_TOKEN }}
 
-    # - name: Upload artifact
-    #     uses: actions/upload-pages-artifact@v2
-    #     with:
-    #     # Upload dist dir
-    #     path: './dist'
+    - name: Upload artifact
+      uses: actions/upload-pages-artifact@v2
+      with:
+        # Upload dist dir
+        path: './gen-web/dist'
 
-    # - name: Deploy to GitHub Pages 🚀
-    #     id: deployment
-    #     uses: actions/deploy-pages@v3
+    - name: Deploy to GitHub Pages 🚀
+      id: deployment
+      uses: actions/deploy-pages@v3
