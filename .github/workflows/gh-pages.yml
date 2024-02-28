@@ -33,7 +33,8 @@ jobs:
     # Install Rust Nightly Toolchain, with Clippy & Rustfmt
     - name: Install nightly Rust
       uses: dtolnay/rust-toolchain@nightly
-      components: clippy, rustfmt
+      with:
+        components: clippy, rustfmt
 
     # - name: Add WASM target
     #     run: rustup target add wasm32-unknown-unknown
