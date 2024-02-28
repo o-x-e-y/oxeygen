@@ -1,9 +1,0 @@
-[package]
-name = "gen-generate"
-version = "0.1.0"
-edition = "2021"
-
-[dependencies]
-gen-core = { path = "../gen-core" }
-itertools = "0.10.5"
-thiserror = "1.0.40"

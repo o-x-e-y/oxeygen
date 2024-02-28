@@ -4,24 +4,24 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-arrayvec = "0.7.2"
+indexmap = { version = "2.2.3", features = ["serde"] }
+itertools = "0.12.1"
+libdof = "0.14.12"
+serde = { version = "1.0.197", features = ["derive"] }
+toml = "0.8.10"
+serde_with = { version = "3.6.1", features = ["indexmap_2"] }
+nanorand = { version = "0.7.0", features = ["getrandom"] }
 file-chunker = "0.1.1"
 fxhash = "0.2.1"
-indexmap = { version = "1.9.2", features = ["serde", "std"] }
-itertools = "0.10.5"
-libdof = "0.14.8"
-memmap2 = "0.9.0"
-num_cpus = "1.15.0"
-rayon = "1.6.1"
-serde = { version = "1.0.152", features = ["derive"] }
-serde_json = "1.0.93"
-serde_with = { version = "2.2.0", features = ["indexmap"] }
 sliding_window_alt = "0.1.2"
-thiserror = "1.0.38"
+thiserror = "1.0.57"
+rayon = "1.8.1"
+serde_json = "1.0.114"
+num_cpus = "1.16.0"
 
 [target.'cfg(target_arch = "wasm32")'.dependencies]
-gloo-net = { version = "0.2.6", default-features = false, features = ["json", "http"] }
+gloo-net = { version = "0.5.0" }
 
 [dev-dependencies]
 assert_approx_eq = "1.1.0"
-time_this = "0.2.2"
+time_this = "0.2.5"

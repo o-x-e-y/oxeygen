@@ -23,7 +23,7 @@ pub struct CorpusRefinerBuilder {
 pub struct RawCorpusRefiner;
 
 impl CorpusRefiner {
-    pub fn new() -> CorpusRefinerBuilder {
+    pub fn builder() -> CorpusRefinerBuilder {
         CorpusRefinerBuilder {
             // multiple_char_rules: FxHashMap::default(),
             shift_to_replacement: false,
@@ -39,7 +39,7 @@ impl CorpusRefiner {
 }
 
 impl CorpusRefinerBuilder {
-    pub fn dead_key<'a>(
+    pub fn dead_key(
         &mut self,
         from_to: impl Iterator<Item = (char, char)>,
         dead_key: char,
@@ -270,7 +270,7 @@ mod tests {
     fn refiner_test() {
         let corpus = "ABBcde abcd";
 
-        let refiner = CorpusRefiner::new()
+        let refiner = CorpusRefiner::builder()
             .include("bcd".chars(), true)
             .convert([('A', '0')])
             .include_ascii_whitespace()

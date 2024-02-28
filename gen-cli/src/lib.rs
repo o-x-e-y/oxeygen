@@ -1,6 +1,3 @@
-use gen_core::keyboard_types::*;
-use gen_core::prelude::*;
-
 use thiserror::Error;
 
 #[derive(Debug, Error)]

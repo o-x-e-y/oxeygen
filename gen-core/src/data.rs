@@ -14,7 +14,6 @@ mod exclude_wasm {
     };
 
     pub use file_chunker::FileChunker;
-    pub use memmap2::Mmap;
     pub use rayon::prelude::*;
     pub use serde_json::ser::PrettyFormatter;
 
@@ -57,7 +56,7 @@ pub enum DataError {
     #[error("Trigrams should contain exactly 3 characters")]
     TrigramConversionError,
 
-    #[error("IoError: {0}")]
+    #[error("{0}")]
     IoError(#[from] std::io::Error),
 
     #[error("Failed to create a file chunker")]
@@ -66,20 +65,20 @@ pub enum DataError {
     #[error("Failed to create appropriate chunks")]
     ChunkerChunkError,
 
-    #[error("Utf8Error: {0}")]
+    #[error("{0}")]
     UTF8Error(#[from] std::str::Utf8Error),
 
     #[error("Path must be either a directory or a file")]
     FaultyPathError,
 
-    #[error("JsonError: {0}")]
+    #[error("{0}")]
     JsonError(#[from] serde_json::Error),
 
     #[error("Specifying a name for the corpus is required")]
     NamelessDataError,
 
     #[cfg(target_arch = "wasm32")]
-    #[error("Gloo error: '{0}'")]
+    #[error("{0}")]
     GlooError(#[from] gloo_net::Error),
 }
 
@@ -90,7 +89,7 @@ impl FromIterator<char> for Data {
 
         if let Some(mut c1) = iter.next() {
             if let Some(mut c2) = iter.next() {
-                while let Some(c3) = iter.next() {
+                for c3 in iter {
                     if c1 == REPLACEMENT_CHAR || c2 == REPLACEMENT_CHAR || c3 == REPLACEMENT_CHAR {
                         continue;
                     }
@@ -189,9 +188,8 @@ impl Data {
 #[cfg(not(target_arch = "wasm32"))]
 impl Data {
     pub fn load<P: AsRef<Path>>(path: P) -> Result<Self, DataError> {
-        let f = File::open(path)?;
-        let mmap = unsafe { Mmap::map(&f)? };
-        let data = serde_json::from_slice(&mmap)?;
+        let content = std::fs::read_to_string(path)?;
+        let data = serde_json::from_str(&content)?;
         Ok(data)
     }
 
@@ -266,7 +264,7 @@ impl Data {
         let mut ser = serde_json::ser::Serializer::with_formatter(vec![], formatter);
         self.serialize(&mut ser)?;
 
-        f.write(ser.into_inner().as_slice())?;
+        f.write_all(ser.into_inner().as_slice())?;
 
         Ok(())
     }
@@ -275,7 +273,7 @@ impl Data {
 #[cfg(target_arch = "wasm32")]
 impl Data {
     pub async fn load(url: &str) -> Result<Self, DataError> {
-        let data = Request::new(&url).send().await?.json::<Self>().await?;
+        let data = Request::get(url).send().await?.json::<Self>().await?;
         Ok(data)
     }
 }

@@ -1,4 +1,5 @@
 /target
 /corpora/*
 /gen-web/dist
+/gen-web-old
 /Cargo.lock

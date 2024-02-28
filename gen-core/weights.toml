@@ -1,0 +1,35 @@
+Sfb = -3
+# Sfr = -1
+# Sft = -4
+# Inroll = 2
+# Outroll = 2
+# Alternation = 1.5
+# Redirect = -0.8
+# OnehandIn = 0.3
+# OnehandOut = 0.3
+# Unspecified = 0.0
+
+
+[fingers]
+# LP = 8
+# LR = 13
+# LM = 16
+# LI = 19
+# LT = 19
+
+# RT = 19
+# RI = 19
+# RM = 16
+# RR = 13
+# RP = 8
+
+LP = 1
+LR = 1
+LM = 1
+LI = 1
+LT = 1
+RT = 1
+RI = 1
+RM = 1
+RR = 1
+RP = 1
