@@ -17,7 +17,7 @@ group: "pages"
 cancel-in-progress: false
 
 jobs:
-Github-Pages-Release:
+  Github-Pages-Release:
 
     timeout-minutes: 10
 
