@@ -1,7 +1,7 @@
 name: Release to Github Pages
 
 on:
-push:
+  push:
     branches: [main]
 workflow_dispatch:
 
@@ -32,14 +32,15 @@ Github-Pages-Release:
 
     # Install Rust Nightly Toolchain, with Clippy & Rustfmt
     - name: Install nightly Rust
-      uses: dtolnay/rust-toolchain@nightly
-      components: clippy, rustfmt
+        uses: dtolnay/rust-toolchain@nightly
+        with:
+        components: clippy, rustfmt
 
     - name: Add WASM target
-      run: rustup target add wasm32-unknown-unknown
+        run: rustup target add wasm32-unknown-unknown
 
     - name: lint
-      run: cargo clippy & cargo fmt
+        run: cargo clippy & cargo fmt
 
 
     # If using tailwind...
