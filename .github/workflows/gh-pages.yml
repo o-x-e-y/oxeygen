@@ -3,7 +3,7 @@ name: Release to Github Pages
 on:
   push:
     branches: [main]
-  # workflow_dispatch:  
+  workflow_dispatch:
 
 # permissions:
 #   contents: write # for committing to gh-pages branch.
