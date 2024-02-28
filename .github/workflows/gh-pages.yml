@@ -36,11 +36,11 @@ jobs:
       with:
         components: clippy, rustfmt
 
-    # - name: Add WASM target
-    #     run: rustup target add wasm32-unknown-unknown
+    - name: Add WASM target
+        run: rustup target add wasm32-unknown-unknown
 
-    # - name: lint
-    #     run: cargo clippy & cargo fmt
+    - name: lint
+        run: cargo clippy & cargo fmt
 
 
     # If using tailwind...
