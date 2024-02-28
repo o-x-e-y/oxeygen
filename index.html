@@ -1,22 +1,43 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Oxeygen</title>
-  <meta content="text/html;charset=utf-8" http-equiv="Content-Type" />
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta charset="UTF-8" />
-  
-</head>
-<body>
-  <div id="main"></div>
-  <script type="module">
-    import init from "/./assets/dioxus/Oxeygen.js";
-    init("/./assets/dioxus/Oxeygen_bg.wasm").then(wasm => {
-      if (wasm.__wbindgen_start == undefined) {
-        wasm.main();
+<!DOCTYPE html><html lang="en"><head>
+    <meta charset="UTF-8">
+    <title>Oxeygen Web</title>
+    <!-- <link rel="shortcut icon" href="../favicon.ico"> -->
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@300&amp;display=swap" rel="stylesheet">
+
+    <style>
+      html {
+        box-sizing: border-box;
       }
-    });
-  </script>
+
+      *, *:before, *:after {
+        box-sizing: inherit;
+      }
+
+      body {
+          background-color: #222;
+          position: absolute;
+          top: 0;
+          left: 0;
+          margin: 0;
+          width: 100%;
+          font-family: Roboto Mono, monospace;
+          font-size: max(0.85vh, 1.05vw);
+          color: #ddd;
+          overflow: scroll;
+      }
+    </style>
   
-</body>
-</html>
+<link rel="preload" href="/oxeygen/gen-web-cf927d8b31c5860231a2113234685693ffe7bcaee84770b046e18088f2603f10dadb0942536d0ca71fd57dfbaee7f091_bg.wasm" as="fetch" type="application/wasm" crossorigin="anonymous" integrity="sha384-z5J9izHFhgIxohEyNGhWk__nvK7oR3CwRuGAiPJgPxDa2wlCU20Mpx_Vffuu5_CR">
+<link rel="modulepreload" href="/oxeygen/gen-web-cf927d8b31c5860231a2113234685693ffe7bcaee84770b046e18088f2603f10dadb0942536d0ca71fd57dfbaee7f091.js" crossorigin="anonymous" integrity="sha384-KVQowHz3oJT4j5nfY56NsSDXKHw131t2qZkZg0C6fX_TRVaU_M_UlyLXWmPw2CUs"></head>
+  <body style="background-color: #222;">
+
+
+<script type="module">
+import init, * as bindings from '/oxeygen/gen-web-cf927d8b31c5860231a2113234685693ffe7bcaee84770b046e18088f2603f10dadb0942536d0ca71fd57dfbaee7f091.js';
+init('/oxeygen/gen-web-cf927d8b31c5860231a2113234685693ffe7bcaee84770b046e18088f2603f10dadb0942536d0ca71fd57dfbaee7f091_bg.wasm');
+window.wasmBindings = bindings;
+
+</script></body></html>
