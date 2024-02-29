@@ -9,13 +9,10 @@ gen-core = { path = "../gen-core" }
 leptos = { version = "0.6.6", features = ["csr", "nightly"] }
 leptos_meta = { version = "0.6.6", features = ["csr", "nightly"] }
 leptos_router = { version = "0.6.6", features = ["csr", "nightly"] }
+serde_json = "1.0.114"
 stylance = { version = "0.3.0", features = ["nightly"] }
 
 [package.metadata.stylance]
-output_file = "./css/bundle.scss"
 folders = ["./css/"]
 extensions = [".module.scss", ".module.css"]
 hash_len = 7
-
-[package.metadata.leptos]
-style_file = "./css/bundle.scss"

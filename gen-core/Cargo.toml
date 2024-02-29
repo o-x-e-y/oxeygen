@@ -6,7 +6,7 @@ edition = "2021"
 [dependencies]
 indexmap = { version = "2.2.3", features = ["serde"] }
 itertools = "0.12.1"
-libdof = "0.14.12"
+libdof = ">= 0.15"
 serde = { version = "1.0.197", features = ["derive"] }
 toml = "0.8.10"
 serde_with = { version = "3.6.1", features = ["indexmap_2"] }

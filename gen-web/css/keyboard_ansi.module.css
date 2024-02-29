@@ -1,19 +1,19 @@
-#keyboard-wrapper-ansi {
+.keyboard-wrapper {
     container-type: inline-size;
     width: 70%;
     aspect-ratio: 3.1 / 1;
     background-color: #333;
     margin: 100px auto 0 auto;
     text-transform: uppercase;
-    padding: 0.15vw;
-    border-radius: 0.5vw;
+    padding: 0.15cqw;
+    border-radius: 0.5cqw;
 }
 
-#keyboard {
+.keyboard {
     width: 100%;
     height: 100%;
     display: grid;
-    font-size: 3.5cqh;
+    font-size: 3.5cqw;
     grid-template-rows: repeat(5, 1fr);
 }
 
@@ -21,37 +21,37 @@
     display: grid;
 }
 
-.num-row-ansi {
+.num-row {
     grid-template-columns: 1fr repeat(12, 1fr) 2fr;
 }
 
-.top-row-ansi {
+.top-row {
     grid-template-columns: 1.5fr repeat(12, 1fr) 1.5fr;
 }
 
-.home-row-ansi {
+.home-row {
     grid-template-columns: 1.75fr repeat(11, 1fr) 2.25fr;
 }
 
-.bot-row-ansi {
+.bot-row {
     grid-template-columns: 2.25fr repeat(10, 1fr) 2.75fr;
 }
 
-.space-row-ansi {
+.space-row {
     grid-template-columns: repeat(3, 1.25fr) 6.25fr repeat(4, 1.25fr);
 }
 
 .key {
-    border-radius: 0.4cqh;
+    border-radius: 0.4cqw;
     background-color: #111;
     overflow: hidden;
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: 0.175vw;
+    margin: 0.23cqw;
 }
 
 .key-left-align {
     justify-content: left;
-    padding-left: 1cqh;
+    padding-left: 3cqw;
 }

@@ -569,6 +569,7 @@ dependencies = [
  "leptos",
  "leptos_meta",
  "leptos_router",
+ "serde_json",
  "stylance",
 ]
 
@@ -1024,9 +1025,9 @@ checksum = "9c198f91728a82281a64e1f4f9eeb25d82cb32a5de251c6bd1b5154d63a8e7bd"
 
 [[package]]
 name = "libdof"
-version = "0.14.12"
+version = "0.15.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a96c5c0866cb2ad3fed553970ad3ada2829a6c23c3cfa7abf89811723482f992"
+checksum = "0f9bfb0101857301fca75dbcd4ef8186028e8cc9fb71c72eaa2b59e2d2938983"
 dependencies = [
  "serde",
  "serde_json",
