@@ -3,12 +3,7 @@ name: Release to Github Pages
 on:
   push:
     branches: [main]
-  workflow_dispatch:
 
-permissions:
-  contents: write # for committing to gh-pages branch.
-  pages: write
-  id-token: write
 
 # Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
 # However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
@@ -20,11 +15,7 @@ jobs:
   Github-Pages-Release:
 
     timeout-minutes: 10
-
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-
+    
     runs-on: ubuntu-latest
 
     steps:
@@ -55,7 +46,7 @@ jobs:
       # this is necessary for github pages where the site is deployed to username.github.io/repo_name and all files must be requested
       # relatively as favicon.ico. if we skip public-url option, the href paths will instead request username.github.io/favicon.ico which
       # will obviously return error 404 not found.
-      run: cd ./gen-web && ../trunk build --release && cp ./dist/index.html ./dist/404.html
+      run: cd ./gen-web && ../trunk build --release --no-sri && cp ./dist/index.html ./dist/404.html
 
 
     # Deploy to gh-pages branch
