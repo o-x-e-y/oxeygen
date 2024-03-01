@@ -38,12 +38,6 @@ pub fn App() -> impl IntoView {
             name="description"
             content="Oxeygen is a blazingly fast keyboard analyzer written in Rust fire emoji rocket emoji"
         />
-        // <Router>
-        //     <Routes>
-        //         <Route path="" view=Home/>
-        //         <Route path="garf" view=Thing/>
-        //     </Routes>
-        // </Router>
         <Home/>
         <Thing/>
     }
