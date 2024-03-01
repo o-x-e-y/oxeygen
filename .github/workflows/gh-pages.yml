@@ -48,6 +48,8 @@ jobs:
       # will obviously return error 404 not found.
       run: cd ./gen-web && ../trunk build --release --public-url "${GITHUB_REPOSITORY#*/}" && cp ./dist/index.html ./dist/404.html
 
+    - name: Disable Jekyll
+      run: touch .nojekyll
 
     # Deploy to gh-pages branch
     - name: Deploy 🚀
