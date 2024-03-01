@@ -4,7 +4,7 @@ use gen_core::libdof::Dof;
 use keyboard::*;
 use leptos::*;
 use leptos_meta::*;
-use leptos_router::*;
+// use leptos_router::*;
 // use gen_core::libdof::dofinitions::KeyboardType;
 
 #[derive(Debug, Clone)]
