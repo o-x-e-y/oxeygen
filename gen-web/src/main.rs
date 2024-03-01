@@ -45,6 +45,7 @@ pub fn App() -> impl IntoView {
         //     </Routes>
         // </Router>
         <Home/>
+        <Thing/>
     }
 }
 
