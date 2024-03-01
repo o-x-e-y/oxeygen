@@ -54,26 +54,22 @@ stylance::import_style!(pub iso, "../css/keyboard_iso.module.css");
 
 use crate::IsoKeyboardStruct;
 
-
 #[component]
 pub fn IsoKeyboard<'a>(keyboard: &'a IsoKeyboardStruct<'a>) -> impl IntoView {
     fn key_row(keys: &[&str]) -> View {
-        keys
-            .iter()
+        keys.iter()
             .map(|k| view! { <div class=iso::key>{k.to_string()}</div> })
             .collect_view()
     }
-
 
     let space_row = key_row(&["CTL", "⌂", "ALT", "", "ALT", "⌂", "≡", "CTL"]);
 
     view! {
         <div class=iso::keyboard_wrapper>
             <div class=iso::keyboard>
-                <div class=classes!(iso::row, iso::num_row)>
-                    {key_row(&keyboard.num_row)}
-                    <div class=iso::key>{"⇐"}</div>
-                </div>
+                <div class=classes!(
+                    iso::row, iso::num_row
+                )>{key_row(&keyboard.num_row)} <div class=iso::key>{"⇐"}</div></div>
                 <div class=classes!(iso::row, iso::top_row)>
                     <div class=classes!(iso::key, iso::key_left_align)>{"↹"}</div>
                     {key_row(&keyboard.top_row)}
@@ -89,9 +85,7 @@ pub fn IsoKeyboard<'a>(keyboard: &'a IsoKeyboardStruct<'a>) -> impl IntoView {
                     {key_row(&keyboard.bot_row)}
                     <div class=iso::key>{"⇧"}</div>
                 </div>
-                <div class=classes!(iso::row, iso::space_row)>
-                    {space_row}
-                </div>
+                <div class=classes!(iso::row, iso::space_row)>{space_row}</div>
             </div>
         </div>
     }

@@ -1,10 +1,10 @@
 mod keyboard;
 
 use gen_core::libdof::Dof;
+use keyboard::*;
 use leptos::*;
 use leptos_meta::*;
 use leptos_router::*;
-use keyboard::*;
 // use gen_core::libdof::dofinitions::KeyboardType;
 
 #[derive(Debug, Clone)]
@@ -28,7 +28,10 @@ pub fn App() -> impl IntoView {
         <Title formatter/>
         <Link rel="preconnect" href="https://fonts.googleapis.com"/>
         <Link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous"/>
-        <Link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@300&display=swap" rel="stylesheet"/>
+        <Link
+            href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@300&display=swap"
+            rel="stylesheet"
+        />
 
         <Meta
             charset="UTF-8"
@@ -47,7 +50,9 @@ pub fn App() -> impl IntoView {
 #[component]
 pub fn Thing() -> impl IntoView {
     view! {
-        <div style="margin-top: 40px; padding: 1cqw; background: linear-gradient(90deg, rgba(34,34,34,1) 0%, rgba(41,41,41,1) 35%, rgba(41,41,41,1) 65%, rgba(34,34,34,1) 100%); text-align: center"><h1>{"Garfsmie"}</h1></div>
+        <div style="margin-top: 40px; padding: 1cqw; background: linear-gradient(90deg, rgba(34,34,34,1) 0%, rgba(41,41,41,1) 35%, rgba(41,41,41,1) 65%, rgba(34,34,34,1) 100%); text-align: center">
+            <h1>{"Garfsmie"}</h1>
+        </div>
     }
 }
 
@@ -62,14 +67,12 @@ pub fn Home() -> impl IntoView {
         bot_row: ["q", "w", "g", "m", "x", "", "k", "p", "'", ";", "."],
     };
 
-    let _qwerty = serde_json::from_str::<Dof>(include_str!("../public/dofs/minimal_valid.dof")).unwrap();
-    
+    let _qwerty =
+        serde_json::from_str::<Dof>(include_str!("../public/dofs/minimal_valid.dof")).unwrap();
 
     provide_meta_context();
 
-    view! {
-        <IsoKeyboard keyboard=&KEYBOARD_ISO/>
-    }
+    view! { <IsoKeyboard keyboard=&KEYBOARD_ISO/> }
 }
 
 fn main() {
