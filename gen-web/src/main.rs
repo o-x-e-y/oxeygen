@@ -32,7 +32,6 @@ pub fn App() -> impl IntoView {
             href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@300&display=swap"
             rel="stylesheet"
         />
-
         <Meta
             charset="UTF-8"
             name="description"
